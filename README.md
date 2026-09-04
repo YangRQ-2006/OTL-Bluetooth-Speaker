@@ -1,3 +1,70 @@
+# OTL Complementary Symmetry Bluetooth Speaker
+
+> **Analog Electronics Lab Course Design** — A discrete-component Class-AB OTL power amplifier paired with a Bluetooth audio receiver module, forming a complete small-power Bluetooth speaker.
+>
+> **[中文版完整设计报告请见下方 | Chinese full design report below]**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Topics](https://img.shields.io/badge/topics-otl%20%7C%20audio--amplifier%20%7C%20bluetooth--speaker-blue)](#)
+
+## At a Glance
+
+| Item | Value |
+|------|-------|
+| Topology | Class-AB OTL complementary symmetry |
+| Power supply | 12 V DC, single rail |
+| Load | 8 Ω / 3 W speaker |
+| Output power | ≥ 2.25 W (max undistorted) |
+| Pre-amp | 2SC1815 (common-emitter) |
+| Output stage | 2SC2073 (NPN) + 2SA940 (PNP) |
+| Biasing | 2 × 1N4007 + 2 kΩ trimmer (R3) |
+| Volume control | 100 kΩ potentiometer (R10) |
+| Bootstrap | 470 µF + (1 kΩ / 330 Ω) |
+| Zobel network | 10 Ω + 0.1 µF |
+| Bluetooth input | CA6912 module (LINE OUT) |
+
+## English Summary
+
+This project implements a single-supply 12 V OTL (Output Transformer-Less) complementary symmetry audio power amplifier using only discrete through-hole components. A CA6912 Bluetooth audio receiver module feeds a LINE-level signal into a 100 kΩ volume pot, which is then AC-coupled into a 2SC1815 common-emitter pre-amp. The amplified signal drives a complementary pair of power transistors (2SC2073 NPN / 2SA940 PNP) biased at Class-AB via two series 1N4007 diodes to eliminate crossover distortion. A self-designed bootstrap network (R7, R8, C3) extends the positive output swing, and a Zobel network (R9, C4) stabilizes the inductive speaker load. Measured performance: ~2.25 W maximum undistorted output into 8 Ω, smooth volume control, no audible self-oscillation, stable continuous operation for 30+ minutes.
+
+For theoretical analysis, Multisim simulation results, parts list, and assembly / debugging notes, **see the full Chinese report below**.
+
+## Repository Layout
+
+```
+OTL-Bluetooth-Speaker/
+├── README.md                    # This file (English intro + Chinese full report)
+├── LICENSE                      # MIT
+├── .gitignore
+├── release-notes.md             # (release-only, not committed)
+├── assets/
+│   ├── diagrams/                # 4 simulation screenshots
+│   │   ├── 01-block-diagram.png
+│   │   ├── 02-static-workpoint-simulation.png
+│   │   ├── 03-dynamic-waveform-simulation.png
+│   │   └── 04-ac-stability-simulation.png
+│   └── photos/                  # 3 real product photos
+│       ├── 01-finished-product-front.jpeg
+│       ├── 02-finished-product-side.jpeg
+│       └── 03-breadboard-detail.jpg
+└── multisim/
+    └── OTL-Bluetooth-Speaker.ms14    # Multisim 14 simulation source
+```
+
+## Reproduction
+
+1. **Simulation** — Open `multisim/OTL-Bluetooth-Speaker.ms14` with Multisim 14 or later
+2. **Hardware** — Procure the parts from the BOM in section §3.3 below and assemble per the schematic description in §3.1
+3. **Bluetooth module** — Any 5 V/12 V LINE-OUT Bluetooth audio receiver module (e.g. CA6912, MH-M38, XY-BT-M) is a drop-in replacement
+
+## License
+
+Released under the **MIT License** — see [LICENSE](LICENSE).
+Product photos are © the original author; please contact the author for commercial reuse.
+
+---
+---
+
 # 基于 OTL 互补对称功率放大电路的蓝牙音箱
 
 > **课程设计报告** —— 模拟电子技术综合实践
@@ -119,7 +186,7 @@ C5 为电解电容，起隔直耦合作用，
 为互补功率管提供静态偏置电压。
 
 - **原理**：两个二极管反向串联，利用二极管的正向导通压降（约 0.7V / 只），
-  为 TIP41A 与 TIP42A 的发射结提供约 1.4V 的偏置电压，
+  为功率管的发射结提供约 1.4V 的偏置电压，
   使两功率管在静态时处于微导通状态，工作在甲乙类，
   从而消除纯乙类工作时的交越失真。
 - **可调性**：串联的电位器 R3 可微调偏置回路的总电压，改变功率管的静态电流；
@@ -379,40 +446,3 @@ $$P_{om} \approx \frac{(V_{cc}/2)^2}{2R_L} = 2.25 \text{ W}$$
 [3] 安森美半导体. TIP41A/TIP42A 功率三极管数据手册. 2018.
 
 [4] 谢嘉奎. 电子线路 非线性部分（第四版）. 北京：高等教育出版社, 2000.
-
----
-
-## 仓库结构
-
-```
-OTL-Bluetooth-Speaker/
-├── README.md                    # 本文档
-├── LICENSE                      # MIT 协议
-├── docs/                        # 课程设计报告 (Markdown)
-├── multisim/                    # Multisim 仿真源文件
-│   └── OTL-Bluetooth-Speaker.ms14
-└── assets/
-    ├── diagrams/                # 原理图、仿真截图
-    │   ├── 01-block-diagram.png
-    │   ├── 02-static-workpoint-simulation.png
-    │   ├── 03-dynamic-waveform-simulation.png
-    │   └── 04-ac-stability-simulation.png
-    └── photos/                  # 实物照片
-        ├── 01-finished-product-front.jpeg
-        ├── 02-finished-product-side.jpeg
-        └── 03-breadboard-detail.jpg
-```
-
-## 复现说明
-
-1. **Multisim 仿真**：使用 Multisim 14+ 打开 `multisim/OTL-Bluetooth-Speaker.ms14`
-2. **实物搭建**：按 `docs/` 中的元器件清单采购并按报告描述焊接即可
-3. **蓝牙模块**：本设计使用成品 CA6912 蓝牙音频接收模组，
-   市面上任何同规格 5V/12V、单端 LINE OUT 输出的蓝牙模组均可直接替换
-
-## 许可证
-
-本仓库代码、文档、仿真文件采用 **MIT 许可证** 开源。
-详见 [LICENSE](LICENSE)。
-
-电路实物照片版权属于原作者；如需商业使用请先联系原作者取得同意。
